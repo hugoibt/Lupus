@@ -1,0 +1,89 @@
+---
+title: "Manejo de Variables"
+author: "Hugo Saab"
+format: html
+editor: visual
+---
+
+En este script se tendrá una introducción de manejo de variables y el manejo de analisis de la base de datos
+
+## Paso 1: Lectura de la base de datos
+
+Lectura de base de datos. Puede haber cadena de texto por que se pone entre comillas
+
+```{r Lectura d ela base de datos}
+Base.de.datos.lupus<-read.csv("bd_lupus_shiny_develop.csv") 
+Base.de.datos.lupus
+```
+
+## Paso 2: Filtrado y seleccion de variables
+
+%\>% pipe Tarea\> separar en una base de datos, gente que tiene lupus y que no tiene lupus, como funciona la funcion summary. Aplicar un summary a la gente que tiene y no tiene lupus y interpretar. Quiero un resumen de la edad de personas que tienen lupus, que no tienen lupus, sexo de las personas que tienen lupus y que no tienen lupus. Checar la funcion str, investigar que hace.
+
+```{r Filtrado con dplyr}
+# Vamos a llamar a la libreria dplyr que pertenece a tidyverse
+library(dplyr)
+Edad_Sexo <- Base.de.datos.lupus %>%
+  select(sex___1, calculated_age) %>%
+  filter(calculated_age >= 18)
+
+#Ahora sacaremos un resumen de la variable edad_sexo
+summary(Edad_Sexo$calculated_age)
+```
+
+## Paso 3: Filtrar gente con lupus y sin lupus y funcion summary
+
+```{r}
+# Filtrar personas con lupus
+con_lupus <- Base.de.datos.lupus %>%
+  select(lupus) %>%
+  filter(lupus == 1)
+con_lupus
+length(con_lupus$lupus)
+# Filtrar personas sin lupus
+sin_lupus <- Base.de.datos.lupus %>%
+  select(lupus, calculated_age) %>%
+  filter(lupus == 2)
+sin_lupus
+length(sin_lupus$lupus)  
+
+# Realizar el mismo filtrado sin lupus pero con la función subset
+subset(Base.de.datos.lupus, lupus==2, select = c(lupus, calculated_age))
+
+# Resumen para personas con lupus
+summary(con_lupus)
+
+# Resumen para personas sin lupus
+summary(sin_lupus)
+
+# lanza estadística (media, mediana, valor minimo y valor maximo, cuartiles en orden)
+
+# Tarea: como cambiar una variable numerica a categorica / etiquetas (variables factor)
+```
+
+## Paso 4: Funcion summary aplicado a la edad y sexo de personas con lupus y sin lupus
+
+```{r}
+#Vamos a hacer un filtro extrallendo toda la base de datos con ls variables: sex_1 y lupus
+Lupus02 <- subset(Base.de.datos.lupus, select = c(lupus, sex___1))
+
+# Resumen del sexo para personas con/sin lupus
+table(Lupus02)
+```
+
+## Paso 5: Investigación sobre la función str()
+
+La función str() en R se utiliza para mostrar la estructura interna de un objeto R, como un data frame. Te muestra el número de observaciones, el número de variables, los nombres de las variables, y el tipo de datos de cada variable.
+
+```{r}
+# Estructura de la base de datos completa
+str(Base.de.datos.lupus)
+
+# Estructura del subconjunto con lupus
+str(con_lupus)
+
+# Estructura del subconjunto sin lupus
+str(sin_lupus)
+```
+
+## Tarea: Investigar connection que permite la comunicacion con Github, averiguar como conectar Github con R. Cambiar la variable lupus y la variable Sex a tipo factor porque actualmente esta en tipo numerico y interpretar. Explicación del cambio de variables. Intentar hacer un grafico descriptivo en The r graph gallery de alguna variable.
